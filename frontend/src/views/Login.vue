@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { useForm } from "vee-validate";
-import CoreInput from "../components/form/CoreInput.vue";
+import CoreInput from "../components/Form/CoreInput.vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "zod";
-import CoreButton from "../components/form/CoreButton.vue";
+import CoreButton from "../components/Form/CoreButton.vue";
 import { login } from "../services/api/auth/login";
 import { useRouter } from "vue-router";
-import { useAuthContext } from "../context/Auth/AuthContext";
+import { useAuthStore } from "../context/Auth/AuthContext";
+// import { useAuthContext } from "../context/Auth/AuthContext";
 
-const { login: loginProvider } = useAuthContext();
+const authStore = useAuthStore();
 const router = useRouter();
 
 const schema = z.object({
@@ -39,7 +40,7 @@ const [password, passwordAttrs] = defineField("password");
 
 const submitForm = handleSubmit(async (values: z.infer<typeof schema>) => {
   await login(values).then(({ accessToken }) => {
-    loginProvider(accessToken);
+    authStore.login(accessToken);
     router.push("/link");
   });
 });
@@ -64,7 +65,6 @@ const submitForm = handleSubmit(async (values: z.infer<typeof schema>) => {
     <div
       class="flex flex-col gap-1.5 p-10 rounded-md max-w-[560px] w-full bg-white/20 backdrop-blur-sm"
     >
-      <div></div>
       <form class="flex flex-col gap-4" @submit.prevent="submitForm">
         <div>
           <CoreInput
@@ -90,7 +90,7 @@ const submitForm = handleSubmit(async (values: z.infer<typeof schema>) => {
             placeholder="Insira sua senha"
           />
         </div>
-        <CoreButton text="Entrar" />
+        <CoreButton text="Entrar" custom-class="hover:bg-[#f1f1f1] bg-white" />
       </form>
     </div>
   </div>

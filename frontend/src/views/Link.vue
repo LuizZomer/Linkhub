@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import CoreInput from "../components/form/CoreInput.vue";
-import { useAuthContext } from "../context/Auth/AuthContext";
-
-const { user } = useAuthContext();
+import CoreInput from "../components/Form/CoreInput.vue";
+import CreateLinkModal from "../components/Modal/CreateLinkModal.vue";
 </script>
 
 <template>
@@ -20,6 +18,7 @@ const { user } = useAuthContext();
   <main class="w-full flex flex-col items-center">
     <article class="w-3/4 shadow-lg py-3 flex flex-wrap gap-3 p-3">
       <CoreInput input-id="searchInput" title="Pesquisa" class="w-full" />
+      <CreateLinkModal />
     </article>
   </main>
 </template>

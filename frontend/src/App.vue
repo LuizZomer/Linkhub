@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { provideAuthContext } from "./context/Auth/AuthContext";
+import { useAuthStore } from "./context/Auth/AuthContext";
 
-provideAuthContext();
+const authStore = useAuthStore();
+authStore.initializeAuth();
 </script>
 
 <template>
   <RouterView />
 </template>
-
-<style scoped></style>

@@ -1,5 +1,6 @@
 import { reactive, provide, inject } from "vue";
 import { jwtDecode } from "jwt-decode";
+import { defineStore } from "pinia";
 
 interface IUserDecoded {
   id: string;
@@ -9,40 +10,43 @@ interface IUserDecoded {
 interface IAuthState {
   isLoggedIn: boolean;
   user: IUserDecoded | null;
-  login: (token: string) => void;
-  logout: () => void;
 }
 
-const authState = reactive<IAuthState>({
-  isLoggedIn: false,
-  user: null,
-  login(token) {
-    localStorage.setItem("authToken", token);
-    const decoded = jwtDecode<IUserDecoded>(token);
-
-    authState.user = decoded;
-    authState.isLoggedIn = true;
+export const useAuthStore = defineStore("auth", {
+  state: (): IAuthState => ({
+    isLoggedIn: false,
+    user: null,
+  }),
+  getters: {
+    isAuthenticated: (state) => state.isLoggedIn,
   },
-  logout() {
-    localStorage.removeItem("authToken");
-    this.user = null;
-    this.isLoggedIn = false;
+  actions: {
+    /** ✅ Reutiliza a lógica de decodificação */
+    setUserFromToken(token: string) {
+      try {
+        localStorage.setItem("authToken", token);
+        this.user = jwtDecode<IUserDecoded>(token);
+        this.isLoggedIn = true;
+      } catch {
+        this.logout();
+      }
+    },
+
+    login(token: string) {
+      this.setUserFromToken(token);
+    },
+
+    logout() {
+      localStorage.removeItem("authToken");
+      this.user = null;
+      this.isLoggedIn = false;
+    },
+
+    initializeAuth() {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        this.setUserFromToken(token);
+      }
+    },
   },
 });
-
-export const AuthContextSymbol = Symbol();
-
-export const provideAuthContext = () => {
-  // Fornece diretamente o estado de autenticação
-  provide(AuthContextSymbol, authState);
-};
-
-export const useAuthContext = () => {
-  const context = inject(AuthContextSymbol) as IAuthState;
-  if (!context) {
-    throw new Error(
-      "AuthContext não encontrado! Certifique-se de usar o provider corretamente."
-    );
-  }
-  return context;
-};

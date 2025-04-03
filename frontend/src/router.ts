@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Login from "./views/Login.vue";
-import { isAuthenticated } from "./utils/isAuthenticated";
+import { useAuthStore } from "./context/Auth/AuthContext";
 
 const routes = [
   { path: "/login", component: Login },
@@ -17,9 +17,15 @@ export const router = createRouter({
 });
 
 router.beforeEach((to, _, next) => {
-  if (to.meta.requiredAuth && !isAuthenticated()) {
+  const authStore = useAuthStore();
+
+  if (!authStore.isLoggedIn) {
+    authStore.initializeAuth();
+  }
+
+  if (to.meta.requiredAuth && !authStore.isAuthenticated) {
     next("/login");
   } else {
-    next(); // Caso contrário, permite a navegação normalmente
+    next();
   }
 });
