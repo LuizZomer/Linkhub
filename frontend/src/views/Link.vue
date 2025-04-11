@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CoreInput from "../components/Form/CoreInput.vue";
+import CoreInput from "../components/form/CoreInput.vue";
 import CreateLinkModal from "../components/Modal/CreateLinkModal.vue";
 import { useQuery } from '@tanstack/vue-query'
 </script>

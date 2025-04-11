@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useForm } from "vee-validate";
-import CoreInput from "../components/Form/CoreInput.vue";
+import CoreInput from "../components/form/CoreInput.vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "zod";
-import CoreButton from "../components/Form/CoreButton.vue";
+import CoreButton from "../components/form/CoreButton.vue";
 import { login } from "../services/api/auth/login";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../context/Auth/AuthContext";
